@@ -2,7 +2,7 @@ import { createStore } from "redux";
 
 
 
-const initState = {value : 1, name : ''};
+const initState = {value : 1, showCounter : true};
 
 const counterReducer = (state = initState, action) => {
     if (action.type === "increase") {
@@ -11,6 +11,10 @@ const counterReducer = (state = initState, action) => {
 
     if (action.type === "decrease") {
         return {...state, value : state.value - action.payload };
+    }
+
+    if (action.type === 'toggleCounter') {
+        return {...state, showCounter : !state.showCounter};
     }
     return state;
 }

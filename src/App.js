@@ -1,39 +1,45 @@
 import { useSelector, useDispatch } from 'react-redux';
-
 import './App.css';
-import { useState } from 'react';
 
 function App() {
 
   const dispatch = useDispatch();
 
-  const state = useSelector((state) => state.value);
-
+  const counterState = useSelector((state) => state.value);
 
   const increas = () => {
     const action = {type : "increase", payload : 4};
     dispatch(action);
   }
-  
-  
+
   const decreas = () => {
     const action = {type : "decrease", payload : 2};
     dispatch(action);
   }
 
-  const [myValue, setMyvalue] = useState(true);
+  const toggleCounter = () => {
+    dispatch({type : 'toggleCounter'});
+  }
+
+  const toggleState = useSelector((state) => state.showCounter)
 
   return (
     <div className="App">
       <h1>Hello Redux Basics</h1>
-      <div className='counter'>Counter: {myValue && <span>{state}</span>}</div>
-      
+
+      {
+        toggleState && 
+          <>
+            <div className='counter'>Counter: {counterState}</div>          
+            <div>
+              <button className='btn' onClick={increas}>increase +</button>
+              <button className='btn' onClick={decreas}>decrease -</button>
+            </div>
+          </>
+      }
+
       <div>
-        <button className='btn' onClick={increas}>increase +</button>
-        <button className='btn' onClick={decreas}>decrease -</button>
-      </div>
-      <div>
-        <button className='btn' onClick={() => setMyvalue(prev => !prev)}>Hid/show Counter Number</button>
+        <button className='btn' onClick={toggleCounter}>Hid/show Counter Number</button>
       </div>
     </div>
   );
