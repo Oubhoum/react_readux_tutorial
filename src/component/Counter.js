@@ -1,27 +1,24 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { useCallback, useEffect } from 'react';
 
+
+// actions
+import {increase, decrease} from '../store/countSlice';
+import { logIn, logOut } from '../store/authSlice';
 
 const Counter = () => {
-    
-  const dispatch = useDispatch();
-  const globalState = useSelector((state) => state);
 
-  const handlerCounterValue = (value) => {
-    if (value < 1) {
-          return 'no number';
-        }
-        return value;
+  const globalState = useSelector((state) => {
+    console.log(state.counter.value);
+    return state;
+  });
+  const dispatch = useDispatch();
+
+  const isLoggedIn = () => {
+    return globalState.auth.isLoggedIn;
   }
 
-  const counterOperation = useCallback((type, payload) => {
-    dispatch({type, payload});
-  }, [dispatch]);
-
-  useEffect(() => counterOperation('increase', 10), [counterOperation]);
-
-  const toggleCounter = () => {
-    dispatch({type : 'toggleCounter'});
+  const loginHandler = (state) => {
+    state ? dispatch(logOut()) : dispatch(logIn());
   }
 
   return (
@@ -29,18 +26,22 @@ const Counter = () => {
       <h1>Hello Redux Basics</h1>
 
       {
-        globalState.showCounter && 
-          <>
-            <div className='counter'>Counter: {handlerCounterValue(globalState.value)}</div>          
-            <div>
-              <button className='btn' onClick={() => counterOperation('increase', 4)}>increase +</button>
-              <button className='btn' onClick={() => counterOperation('decrease', 2)}>decrease -</button>
-            </div>
-          </>
+        isLoggedIn() && (
+          
+            <>
+              <div className='counter'>Counter: {globalState.counter.value}</div>          
+              <div>
+                <button className='btn' onClick={() => dispatch(increase(5))}>increase +</button>
+                <button className='btn' onClick={() => dispatch(decrease(2))}>decrease -</button>
+              </div>
+            </>
+        )
       }
 
       <div>
-        <button className='btn' onClick={toggleCounter}>Hid/show Counter Number</button>
+        <button className='btn' onClick={() => loginHandler(isLoggedIn())}>
+          {isLoggedIn() ? 'Logout' : 'LogIn'}
+        </button>
       </div>
     </div> );
 }
